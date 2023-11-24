@@ -1,8 +1,10 @@
 const express = require("express");
+// Enable CORS for all routes
+const cors = require('cors');
 
 const app = express();
 const connectDB = require("./config/db");
-
+app.use(cors());
 connectDB();
 
 app.use(express.json({ extended: false }));
@@ -11,9 +13,9 @@ app.get("/", (req, res) => res.send("Runn"));
 
 app.use("/api/users", require("./routes/api/users"));
 
-app.use("/api/posts", require("./routes/api/posts"));
+// app.use("/api/posts", require("./routes/api/posts"));
 
-app.use("/api/profile", require("./routes/api/profile"));
+// app.use("/api/profile", require("./routes/api/profile"));
 
 app.use("/api/auth", require("./routes/api/auth"));
 
