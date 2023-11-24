@@ -1,13 +1,16 @@
 import {Link} from "react-router-dom";
 import {useState} from "react";
 import axios from "axios";
+import {connect} from "react-redux";
 import HCaptcha from '@hcaptcha/react-hcaptcha';
+import {setAlert} from "../../actions/alert";
+import PropTypes from "prop-types";
 
 const url=process.env.REACT_APP_BACKEND_URL;
 
-const Register = () => {
+const Register = (props) => {
 
-    const [buttonDisabled,setButtonDisabled]=useState(true);
+    const [buttonDisabled,setButtonDisabled]=useState(!true);
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -25,7 +28,7 @@ const Register = () => {
         }
 
         if (password!==confirmPassword)
-            console.log("Mismatch password")
+            props.setAlert("Passwords don't match","danger");
         else {
             console.log(formData);
             try{
@@ -94,4 +97,8 @@ const Register = () => {
 )
 }
 
-export default Register;
+Register.propTypes ={
+    setAlert:PropTypes.func.isRequired
+}
+
+export default connect(null,{setAlert})(Register);
