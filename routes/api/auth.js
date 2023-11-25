@@ -28,7 +28,9 @@ router.post(
 
   async (req, res, next) => {
     const err = validationResult(req);
+    // console.log("eee",);
     if (!err.isEmpty()) {
+
       return res.status(400).json({ errors: err.array() });
       //   next();
     }
@@ -37,14 +39,16 @@ router.post(
     try {
       let user = await User.findOne({ email });
       if (!user) {
+        // console.log("III");
         return res.status(400).json({ error: [{ msg: "User not found" }] });
       }
 
       const isMismatch = await bcrypt.compare(password, user.password);
       if (!isMismatch) {
+        // console.log("IUBI")
         return res
           .status(400)
-          .json({ error: [{ msg: "Invalid Credentials" }] });
+          .json({ errors: [{ msg: "Invalid Credentials" }] });
       }
 
       const payload = {

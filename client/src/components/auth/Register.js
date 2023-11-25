@@ -1,5 +1,5 @@
-import {Link} from "react-router-dom";
-import {useState} from "react";
+import {Link, Navigate} from "react-router-dom";
+import React, {useState} from "react";
 import axios from "axios";
 import {connect} from "react-redux";
 import HCaptcha from '@hcaptcha/react-hcaptcha';
@@ -25,7 +25,7 @@ const Register = (props) => {
     const onSubmit = async event => {
         event.preventDefault();
         if (buttonDisabled) {
-            alert("Please verify yoursef");
+            props.setAlert("Please verify yoursef","danger");
             return ;
         }
 
@@ -37,10 +37,14 @@ const Register = (props) => {
 
     }
 
+
     const handleVerificationSuccess = (t,k) => {
         setButtonDisabled(false);
     } ;
 
+    if (props.isAuthenticated) {
+        return <Navigate to="/dashboard" />;
+    }
 
 
     return (
@@ -96,7 +100,11 @@ const Register = (props) => {
 
 Register.propTypes ={
     setAlert:PropTypes.func.isRequired,
-    register:PropTypes.func.isRequired
+    register:PropTypes.func.isRequired,
+    isAuthenticated: PropTypes.bool
 }
+const mapStateToProps = (state) => ({
+    isAuthenticated: state.auth.isAuthenticated
+});
 
-export default connect(null,{setAlert,register})(Register);
+export default connect(mapStateToProps,{setAlert,register})(Register);
