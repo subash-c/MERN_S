@@ -5,12 +5,14 @@ import {connect} from "react-redux";
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import {setAlert} from "../../actions/alert";
 import PropTypes from "prop-types";
+import auth from "../../reducers/auth";
+import {register} from "../../actions/auth";
 
 const url=process.env.REACT_APP_BACKEND_URL;
 
 const Register = (props) => {
 
-    const [buttonDisabled,setButtonDisabled]=useState(!true);
+    const [buttonDisabled,setButtonDisabled]=useState(false);
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -30,14 +32,7 @@ const Register = (props) => {
         if (password!==confirmPassword)
             props.setAlert("Passwords don't match","danger");
         else {
-            console.log(formData);
-            try{
-                const res=await axios.post(url+"/api/users",{...formData})
-                await console.log(res);
-            }
-            catch (err){
-                console.log(err);
-            }
+           await props.register(name,email,password);
         }
 
     }
@@ -59,13 +54,14 @@ const Register = (props) => {
                         <input type="text" placeholder="Name" name="name" value={name}  onChange={e=>onChange(e)} required/>
                     </div>
                     <div className="form-group">
-                        <input type="email" placeholder="Email Address" name="email" onChange={e=>onChange(e)} />
+                        <input type="email" placeholder="Email Address" name="email" onChange={e=>onChange(e)} required/>
                             <small className="form-text">This site uses Gravatar so if you want a profile image, use a
                                 Gravatar email</small>
 
                     </div>
                     <div className="form-group">
                         <input
+                            required
                             type="password"
                             placeholder="Password"
                             name="password"
@@ -76,6 +72,7 @@ const Register = (props) => {
                     <div className="form-group">
                         <input
                             type="password"
+                            required
                             placeholder="Confirm Password"
                             name="confirmPassword"
                             minLength="6"
@@ -98,7 +95,8 @@ const Register = (props) => {
 }
 
 Register.propTypes ={
-    setAlert:PropTypes.func.isRequired
+    setAlert:PropTypes.func.isRequired,
+    register:PropTypes.func.isRequired
 }
 
-export default connect(null,{setAlert})(Register);
+export default connect(null,{setAlert,register})(Register);
