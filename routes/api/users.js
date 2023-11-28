@@ -5,6 +5,7 @@ const User = require("../../models/User");
 const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
+const generateNumericOTP=require("./generateNumericOTP")
 const config = require("config");
 
 router.post(
@@ -20,9 +21,8 @@ router.post(
     const err = validationResult(req);
     if (!err.isEmpty()) {
       return res.status(400).json({ errors: err.array() });
-      //   next();
     }
-    // console.log(req.body);
+
     const { name, email, password } = req.body;
     try {
       let user = await User.findOne({ email });
@@ -38,15 +38,16 @@ router.post(
         d: "mm",
       });
 
+
       user = new User({
         name,
         email,
         password,
         avatar,
+
       });
 
       const salt = await bcrypt.genSalt(10);
-
       user.password = await bcrypt.hash(password, salt);
 
       await user.save();
